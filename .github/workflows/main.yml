@@ -1,0 +1,44 @@
+name: Release
+on:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: read # for checkout
+
+jobs:
+  release:
+    name: Release
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write # Required for publishing GitHub releases
+      issues: write # Required for commenting on released issues
+      pull-requests: write # Required for commenting on released pull requests
+      id-token: write # Required for OIDC npm provenance
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # Ensure full history
+
+      - name: Fetch latest changes
+        run: git pull --rebase origin main
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "lts/*"
+          cache: npm # Cache dependencies to speed up installs
+
+      - name: Install dependencies
+        run: npm install # Replaces npm clean-install to avoid lockfile issues
+
+      - name: Verify integrity of dependencies
+        run: npm audit signatures
+
+      - name: Run Semantic Release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: npx semantic-release
