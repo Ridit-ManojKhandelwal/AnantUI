@@ -2,7 +2,7 @@ name: Release
 on:
   push:
     branches:
-      - main
+      - master # or main
 
 permissions:
   contents: read # for checkout
@@ -24,8 +24,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: "18"
-          cache: npm
+          node-version: "lts/*"
       - name: Install dependencies
         run: npm clean-install
       - name: Verify the integrity of provenance attestations and registry signatures for installed dependencies
