@@ -1,6 +1,6 @@
 {
   "name": "@mnovus/ui",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "UI used by Anantam",
   "main": "src/index.ts",
   "files": [
